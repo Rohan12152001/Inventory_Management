@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Issue</title>
+</head>
+<body>
+
+    <div>
+    <h1><i><u>Issue Equipment</u></i></h1>
+
+    <form action="/issuePost" method="post">
+        <input type="text" name="empID" id="empID" placeholder="EmployeeID" required><br><br>
+        <input type="text" name="equipID" id="equipID" readonly><br><br>
+        <input type="submit" name="Submit-form" id="Submit-form" value="Submit">
+    </form>
+
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById("equipID").defaultValue = urlParams.get('equipID');
+    </script>
+
+</body>
+</html>

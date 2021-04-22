@@ -33,25 +33,46 @@
     <table id="equipment_table">
         <tr>
         <th>ID</th>
-        <th>Name</th>
+        <th>Equipment</th>
         <th>Available</th>
+        <th>Current User</th>
         <th>Issue</th>
         <th>Return</th>
         </tr>
 
         {% for record in records %}
             <tr>
-            <td>{{record['equipID']}}</td>
-            <td>{{record['equipName']}}</td>
-            {% if record['issued']!=1 %}
-                <td>Yes</td>
-            {% else %}
-                <td>No</td>
-            {% endif %}
-            <td><input type="submit" value="Issue"></td>
-            <td><input type="submit" value="Return"></td>
+                <td>{{record['equipID']}}</td>
+                <td>{{record['equipName']}}</td>
+                {% if record['issued']!=1 %}
+                    <td>Yes</td>
+                    <td>{{record['holderID']}}</td>
+                    <!-- Only issue -->
+                    <td>
+                        <form action="/issue">
+                            <input type="hidden" name="equipID" value={{record['equipID']}}>
+                            <input type="submit" value="Issue">
+                        </form>
+                    </td>
+                    <td>--</td>
+                {% else %}
+                    <td>No</td>
+                    <td>None</td>
+                    <td>--</td>
+                    <td><input type="submit" value="Return"></td>   <!-- Only return -->
+                {% endif %}
             </tr>
         {% endfor %}
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li><h2>{{ message }}</h2></li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
 
     </table>
 
