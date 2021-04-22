@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <style>
+        th{
+            background-color: aqua;
+            text-align: center;
+        }
+        td{
+            background-color: white;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: center;
+        }
+        #equipment_table{
+            border:2px solid black;
+            padding: 10px;
+            width: 75%;
+            border-collapse: separate;
+            table-layout: auto
+        }
+    </style>
+
+</head>
+<body>
+
+    <h1><i><u>Welcome to the Inventory !</u></i></h1>
+    <br>
+
+    <table id="equipment_table">
+        <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Available</th>
+        <th>Issue</th>
+        <th>Return</th>
+        </tr>
+
+        {% for record in records %}
+            <tr>
+            <td>{{record['equipID']}}</td>
+            <td>{{record['equipName']}}</td>
+            {% if record['issued']!=1 %}
+                <td>Yes</td>
+            {% else %}
+                <td>No</td>
+            {% endif %}
+            <td><input type="submit" value="Issue"></td>
+            <td><input type="submit" value="Return"></td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>
