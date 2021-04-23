@@ -1,20 +1,16 @@
-import mysql.connector
 import requests, os, sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import time
-import datetime
-from flask import Flask, jsonify, request, \
+from flask import Flask, request, \
     render_template, redirect, \
     url_for, flash
-from mysql.connector import Error
-from mysql.connector import errorcode
 from dao import Equipment, BufferedRequests, Employee
 from configuration import DB
 
 # app
 app = Flask(__name__)
 
-# Employee Home page
+# Employee Home page ##
 @app.route('/')
 def home_page():
     equipments = Equipment()
@@ -57,7 +53,7 @@ def return_post():
 
     return redirect(url_for('home_page'))
 
-# Manager Home page
+# Manager Home page ##
 @app.route('/manager')
 def manager_home():
     equipments = Equipment()
@@ -67,7 +63,9 @@ def manager_home():
     bufferRecords = buffer.getAllwithNames()
     # print(bufferRecords)
 
-    return render_template('managerHome.html', records=equipmentRecords, bufferRecords=bufferRecords)
+    return render_template('managerHome.html',
+                           records=equipmentRecords,
+                           bufferRecords=bufferRecords)
 
 @app.route('/approve', methods=['POST'])
 def approve_equipment():
