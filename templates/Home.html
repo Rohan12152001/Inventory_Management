@@ -22,12 +22,15 @@
             border-collapse: separate;
             table-layout: auto
         }
+        a {
+            color: blue;
+        }
     </style>
 
 </head>
 <body>
 
-    <h1><i><u>Welcome to the Inventory !</u></i></h1>
+    <h1><i><u>Welcome to the Inventory !</u> (Employee)</i></h1>
     <br>
 
     <table id="equipment_table">
@@ -75,6 +78,11 @@
         {% endwith %}
 
     </table>
+
+    <div>
+        <br>
+        <h2><i>For manager: <a href="{{ url_for('manager_home') }}"> ClickHere</a></i></h2>
+    </div>
 
 </body>
 </html>

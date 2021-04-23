@@ -3,7 +3,9 @@ import requests, os, sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import time
 import datetime
-from flask import Flask, jsonify, request, render_template, redirect, url_for, flash
+from flask import Flask, jsonify, request, \
+    render_template, redirect, \
+    url_for, flash
 from mysql.connector import Error
 from mysql.connector import errorcode
 from dao import Equipment, BufferedRequests
@@ -12,7 +14,7 @@ from configuration import DB
 # app
 app = Flask(__name__)
 
-# Home page
+# Employee Home page
 @app.route('/')
 def home_page():
     equipments = Equipment()
@@ -42,6 +44,35 @@ def issue_post():
         flash(message)
         return redirect(url_for('home_page'))
 
+# Manager Home page
+@app.route('/manager')
+def manager_home():
+    equipments = Equipment()
+    equipmentRecords = equipments.getAll()
+
+    buffer = BufferedRequests()
+    bufferRecords = buffer.getAllwithNames()
+    # print(bufferRecords)
+
+    return render_template('managerHome.html', records=equipmentRecords, bufferRecords=bufferRecords)
+
+@app.route('/approve', methods=['POST'])
+def approve_equipment():
+    empID = request.form.get('empID')
+    equipID = request.form.get('equipID')
+    empName = request.form.get('empName')
+    reqTime = request.form.get('issueTime')
+    print(empID, equipID)
+
+    # 1. change in equipments table
+    equipment = Equipment()
+    equipment.approveEquipment(empID, empName, equipID, reqTime)
+
+    # 2. change in buffer (remove the duplicate requests)
+    buffer = BufferedRequests()
+    buffer.removeDuplicates(equipID)
+
+    return redirect(url_for('manager_home'))
 
 if __name__ == '__main__':
     app.secret_key = DB.secretKey

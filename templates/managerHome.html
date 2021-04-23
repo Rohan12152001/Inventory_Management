@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Home</title>
+
+    <style>
+        th{
+            background-color: aqua;
+            text-align: center;
+        }
+        td{
+            background-color: white;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: center;
+        }
+        #equipment_table{
+            border:2px solid black;
+            padding: 10px;
+            width: 75%;
+            border-collapse: separate;
+            table-layout: auto
+        }
+
+        #requests_table{
+            border:2px solid black;
+            padding: 10px;
+            width: 75%;
+            border-collapse: separate;
+            table-layout: auto
+        }
+    </style>
+</head>
+<body>
+
+    <h1><i><u>Welcome to the Inventory !</u> (Manager) </i></h1>
+    <br>
+
+    <table id="equipment_table">
+        <tr>
+        <th>ID</th>
+        <th>Equipment</th>
+        <th>Available</th>
+        <th>Current User</th>
+        </tr>
+
+        {% for record in records %}
+            <tr>
+                <td>{{record['equipID']}}</td>
+                <td>{{record['equipName']}}</td>
+                {% if record['issued']!=1 %}
+                    <td>Yes</td>
+                    <td>{{record['holderID']}}</td>
+                {% else %}
+                    <td>No</td>
+                    <td>{{record['holderID']}}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+    </table>
+
+    <div id="message-div">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li><h2>{{ message }}</h2></li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </div>
+
+    <div id="requests-div">
+        <br><br>
+        <h1><i><u>Access requests from your employees:</u></i></h1>
+        <!-- write for access table here -->
+        <table id="requests_table">
+        <tr>
+        <th>EquipmentID</th>
+        <th>EquipmentName</th>
+        <th>EmployeeID</th>
+        <th>EmployeeName</th>
+        <th>Request Time (IST)</th>
+        <th>Approval</th>
+        </tr>
+
+        {% for record in bufferRecords %}
+            <tr>
+                <td>{{record['equipID']}}</td>
+                <td>{{record['equipName']}}</td>
+                <td>{{record['empID']}}</td>
+                <td>{{record['empName']}}</td>
+                <td>{{record['reqTime']}}</td>
+                <td>
+                    <form action="/approve" method="post">
+                        <input type="hidden" name="empID" id="empID" value={{record['empID']}}>
+                        <input type="hidden" name="equipID" id="equipID" value={{record['equipID']}}>
+                        <input type="hidden" name="issueTime" id="issueTime" value={{record['reqTimeEpoch']}}>
+                        <input type="hidden" name="empName" id="empName" value={{record['empName']}}>
+                        <input type="submit" name="Approve-form" id="Approve-form" value="Approve">
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </table>
+    </div>
+
+    <div>
+        <br>
+        <h2><i>For Employee: <a href="{{ url_for('home_page') }}"> ClickHere</a></i></h2>
+    </div>
+
+</body>
+</html>

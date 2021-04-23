@@ -9,6 +9,12 @@ from configuration import DB
 
 """ For database interactions only """
 
+# Global functions (helpers)
+def formatDateTime(givenTime):
+    return datetime.datetime.fromtimestamp(
+        int(givenTime)                    # Adding 19800 for IST time
+    ).strftime('%d-%m-%Y || %H:%M:%S')
+
 # For equipments
 
 class Equipment:
@@ -35,6 +41,100 @@ class Equipment:
 
         return records
 
+    def getName(self, ID):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+            sql_fetch_query = "select equipName from equipments WHERE equipID=%s"
+            cursor.execute(sql_fetch_query, (ID,))
+            records = cursor.fetchone()
+            # print(records)
+            # print(len(records))
+        except Error as e:
+            print("Error reading data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+
+        return records
+
+    def approveEquipment(self, empID, empName, equipID, reqTime):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+
+            sql_check_query = """UPDATE equipments 
+                                 SET issued = %s, issueTime = %s, holderID = %s, holderName = %s 
+                                 WHERE equipID = %s;"""
+
+            cursor.execute(sql_check_query, (1, reqTime, empID, empName, equipID))
+            connection.commit()
+            print("Equipment approved !")
+        except Error as e:
+            print("Error updating data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+
+
+class Employee:
+    def getAll(self):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+            sql_fetch_query = "select * from employee order by empID ASC"
+            cursor.execute(sql_fetch_query)
+            records = cursor.fetchall()
+            # print(records)
+            # print(len(records))
+        except Error as e:
+            print("Error reading data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+
+        return records
+
+    def getName(self, ID):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+            sql_fetch_query = "select empName from employee WHERE empID=%s"
+            cursor.execute(sql_fetch_query, (ID,))
+            records = cursor.fetchone()
+            # print(records)
+            # print(len(records))
+        except Error as e:
+            print("Error reading data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+
+        return records
 
 class BufferedRequests:
     def checkBuffer(self, empID, equipID):
@@ -76,7 +176,7 @@ class BufferedRequests:
                                 values (%s,%s,%s)"""
             cursor.execute(sql_check_query, (empID, equipID, reqTime))
             connection.commit()
-            print("Success")
+            print("Successfully added new request !")
         except Error as e:
             print("Error inserting data from MySQL table", e)
 
@@ -86,6 +186,64 @@ class BufferedRequests:
                 connection.close()
                 print("MySQL connection is closed")
 
+    def getAll(self):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+            sql_fetch_query = "select * from requestQueue order by reqTime ASC"
+            cursor.execute(sql_fetch_query)
+            records = cursor.fetchall()
+            # print(records)
+            # print(len(records))
+        except Error as e:
+            print("Error reading data from MySQL table", e)
 
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
 
+        return records
+
+    def getAllwithNames(self):
+        empObject = Employee()
+        equipObject = Equipment()
+        buffer = self.getAll()
+        records = buffer.copy()
+        print(records)
+
+        for record in records:
+            empName = empObject.getName(record['empID'])['empName']
+            equipName = equipObject.getName(record['equipID'])['equipName']
+            record['equipName'] = equipName
+            record['empName'] = empName
+            record['reqTimeEpoch'] = record['reqTime']
+            record['reqTime'] = formatDateTime(record['reqTime'])
+
+        return records
+
+    def removeDuplicates(self, equipID):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+            sql_check_query = """DELETE FROM requestQueue
+                                 WHERE equipID=%s"""
+            cursor.execute(sql_check_query, (equipID,))
+            connection.commit()
+            print("Successfully deleted duplicates !")
+        except Error as e:
+            print("Error inserting data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
 
