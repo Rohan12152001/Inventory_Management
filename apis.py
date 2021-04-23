@@ -1,11 +1,11 @@
 import requests, os, sys
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import time
 from flask import Flask, request, \
     render_template, redirect, \
     url_for, flash
 from dao import Equipment, BufferedRequests, Employee
 from configuration import DB
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # app
 app = Flask(__name__)
