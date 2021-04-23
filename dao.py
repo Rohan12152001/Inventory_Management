@@ -5,6 +5,18 @@ from configuration import DB
 
 """ For database interactions only """
 
+# Global connection object
+connection = mysql.connector.connect(host=DB.host,
+                                     database=DB.database,
+                                     user=DB.user,
+                                     password=DB.password)
+
+# Triggered when server shut down
+def close():
+    if connection.is_connected():
+        print("Closing connection !")
+        connection.close()
+
 # Global functions (helpers)
 def formatDateTime(givenTime):
     return datetime.datetime.fromtimestamp(
@@ -15,10 +27,6 @@ def formatDateTime(givenTime):
 class Equipment:
     def getAll(self):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_fetch_query = "select * from equipments order by equipID ASC"
             cursor.execute(sql_fetch_query)
@@ -27,21 +35,15 @@ class Equipment:
             # print(len(records))
         except Error as e:
             print("Error reading data from MySQL table", e)
-
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         return records
 
     def getName(self, ID):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_fetch_query = "select equipName from equipments WHERE equipID=%s"
             cursor.execute(sql_fetch_query, (ID,))
@@ -54,17 +56,12 @@ class Equipment:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         return records
 
     def approveEquipment(self, empID, empName, equipID, reqTime):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
 
             sql_check_query = """UPDATE equipments 
@@ -80,15 +77,10 @@ class Equipment:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
     def returnEquipment(self, empID, equipID):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
 
             sql_check_query = """UPDATE equipments 
@@ -104,17 +96,12 @@ class Equipment:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
 # For Employee
 class Employee:
     def getAll(self):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_fetch_query = "select * from employee order by empID ASC"
             cursor.execute(sql_fetch_query)
@@ -127,17 +114,12 @@ class Employee:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         return records
 
     def getName(self, ID):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_fetch_query = "select empName from employee WHERE empID=%s"
             cursor.execute(sql_fetch_query, (ID,))
@@ -150,7 +132,6 @@ class Employee:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         return records
@@ -159,10 +140,6 @@ class Employee:
 class BufferedRequests:
     def checkBuffer(self, empID, equipID):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_check_query = f"select empID from requestQueue " \
                               "WHERE empID = %s AND " \
@@ -176,7 +153,6 @@ class BufferedRequests:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         if len(records) > 0:
@@ -186,10 +162,6 @@ class BufferedRequests:
 
     def addNewRequest(self, empID, equipID, reqTime):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_check_query = """INSERT INTO requestQueue 
                                 (empID, equipID, reqTime) 
@@ -203,15 +175,10 @@ class BufferedRequests:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
     def getAll(self):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_fetch_query = "select * from requestQueue order by reqTime ASC"
             cursor.execute(sql_fetch_query)
@@ -224,7 +191,6 @@ class BufferedRequests:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 
         return records
@@ -248,10 +214,6 @@ class BufferedRequests:
 
     def removeDuplicates(self, equipID):
         try:
-            connection = mysql.connector.connect(host=DB.host,
-                                                 database=DB.database,
-                                                 user=DB.user,
-                                                 password=DB.password)
             cursor = connection.cursor(dictionary=True)
             sql_check_query = """DELETE FROM requestQueue
                                  WHERE equipID=%s"""
@@ -264,6 +226,5 @@ class BufferedRequests:
         finally:
             if (connection.is_connected()):
                 cursor.close()
-                connection.close()
                 print("MySQL connection is closed")
 

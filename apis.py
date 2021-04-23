@@ -1,14 +1,21 @@
 import os, sys
-import time
+import time, signal
 from flask import Flask, request, \
     render_template, redirect, \
     url_for, flash
 from dao import Equipment, BufferedRequests, Employee
 from configuration import DB
+from dao import close
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # app
 app = Flask(__name__)
+
+# signal
+def signal_handler(sig, frame):
+    print('You pressed Ctrl+C!')
+    close()
+    sys.exit(0)
 
 # Employee Home page ##
 @app.route('/')
@@ -86,5 +93,7 @@ def approve_equipment():
 
 if __name__ == '__main__':
     app.secret_key = DB.secretKey
+    # signal to close the DB connection
+    signal.signal(signal.SIGINT, signal_handler)
     app.run(port=5000, debug=False)
 
