@@ -11,12 +11,20 @@ And then run this script...
 
 """
 
+# Global connection object
+connection = mysql.connector.connect(host=DB.host,
+                                     database=DB.database,
+                                     user=DB.user,
+                                     password=DB.password)
+
+# Triggered when server shut down
+def close():
+    if connection.is_connected():
+        print("Closing connection !")
+        connection.close()
+
 def SET_SQL_UPDATE():
     try:
-        connection = mysql.connector.connect(host=DB.host,
-                                             database=DB.database,
-                                             user=DB.user,
-                                             password=DB.password)
         cursor = connection.cursor()
         sql_query = """SET SQL_SAFE_UPDATES = 0;"""
         cursor.execute(sql_query)
@@ -28,16 +36,10 @@ def SET_SQL_UPDATE():
     finally:
         if (connection.is_connected()):
             cursor.close()
-            connection.close()
-            print("MySQL connection is closed")
 
 # Basically a table for keeping track of equipments
 def forEquipments():
     try:
-        connection = mysql.connector.connect(host=DB.host,
-                                             database=DB.database,
-                                             user=DB.user,
-                                             password=DB.password)
         cursor = connection.cursor()
         sql_query = """CREATE TABLE equipments(
                         equipID varchar(10) PRIMARY KEY,
@@ -65,16 +67,10 @@ def forEquipments():
     finally:
         if (connection.is_connected()):
             cursor.close()
-            connection.close()
-            print("MySQL connection is closed")
 
 # Table for keeping records of employees
 def forEmployee():
     try:
-        connection = mysql.connector.connect(host=DB.host,
-                                             database=DB.database,
-                                             user=DB.user,
-                                             password=DB.password)
         cursor = connection.cursor()
         sql_query = """CREATE TABLE employee(
                         empID varchar(10) PRIMARY KEY,
@@ -99,17 +95,11 @@ def forEmployee():
     finally:
         if (connection.is_connected()):
             cursor.close()
-            connection.close()
-            print("MySQL connection is closed")
 
 # This requestQueue table is used to maintain the
 # access requests from the employees
 def forRequestQueue():
     try:
-        connection = mysql.connector.connect(host=DB.host,
-                                             database=DB.database,
-                                             user=DB.user,
-                                             password=DB.password)
         cursor = connection.cursor()
         sql_query = """CREATE TABLE requestQueue(
                         empID varchar(10),
@@ -126,16 +116,10 @@ def forRequestQueue():
     finally:
         if (connection.is_connected()):
             cursor.close()
-            connection.close()
-            print("MySQL connection is closed")
 
 # Table for keeping records of employees
 def forManager():
     try:
-        connection = mysql.connector.connect(host=DB.host,
-                                             database=DB.database,
-                                             user=DB.user,
-                                             password=DB.password)
         cursor = connection.cursor()
         sql_query = """CREATE TABLE manager(
                         manID varchar(10) PRIMARY KEY,
@@ -153,8 +137,6 @@ def forManager():
     finally:
         if (connection.is_connected()):
             cursor.close()
-            connection.close()
-            print("MySQL connection is closed")
 
 if __name__ == '__main__':
     SET_SQL_UPDATE()
@@ -162,6 +144,8 @@ if __name__ == '__main__':
     forEmployee()
     forManager()
     forRequestQueue()
+    # close connection
+    close()
 
 
 
