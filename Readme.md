@@ -32,8 +32,8 @@
 
     > To know know more about the tables please check out the _migrate.py_ file.
 
-7) Now we are ready to start the server
-    > Run the command _python apis.py_ to run the server on port 5000
+7) **Now we are ready to start the server**
+    > **Run the command _python apis.py_ to run the server on port 5000**
 
 8) Basically the app takes you to the home page of employees where in one can ask for access of 
    the equipment OR return an equipment..
