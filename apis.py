@@ -86,5 +86,5 @@ def approve_equipment():
 
 if __name__ == '__main__':
     app.secret_key = DB.secretKey
-    app.run(port=5000, debug=True)
+    app.run(port=5000, debug=False)
 
