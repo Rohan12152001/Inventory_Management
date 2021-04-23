@@ -88,6 +88,30 @@ class Equipment:
                 connection.close()
                 print("MySQL connection is closed")
 
+    def returnEquipment(self, empID, equipID):
+        try:
+            connection = mysql.connector.connect(host=DB.host,
+                                                 database=DB.database,
+                                                 user=DB.user,
+                                                 password=DB.password)
+            cursor = connection.cursor(dictionary=True)
+
+            sql_check_query = """UPDATE equipments 
+                                 SET issued = %s, issueTime = %s, holderID = %s, holderName = %s 
+                                 WHERE equipID = %s;"""
+
+            cursor.execute(sql_check_query, (0, None, None, None, equipID))
+            connection.commit()
+            print("Equipment returned !")
+        except Error as e:
+            print("Error updating data from MySQL table", e)
+
+        finally:
+            if (connection.is_connected()):
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+
 
 class Employee:
     def getAll(self):

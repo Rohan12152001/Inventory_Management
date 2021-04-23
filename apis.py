@@ -8,7 +8,7 @@ from flask import Flask, jsonify, request, \
     url_for, flash
 from mysql.connector import Error
 from mysql.connector import errorcode
-from dao import Equipment, BufferedRequests
+from dao import Equipment, BufferedRequests, Employee
 from configuration import DB
 
 # app
@@ -24,7 +24,9 @@ def home_page():
 @app.route('/issue')
 def issue_page():
     # we are sending hidden form data of equipID to this html page
-    return render_template('IssueEquip.html')
+    employee = Employee()
+    records = employee.getAll()
+    return render_template('IssueEquip.html', records=records)
 
 @app.route('/issuePost', methods=['POST'])
 def issue_post():
@@ -39,10 +41,21 @@ def issue_post():
         return redirect(url_for('home_page'))
     else:
         # add new request
-        object.addNewRequest(empID, equipID, int(time.time()))
+        epochTime = int(time.time())
+        object.addNewRequest(empID, equipID, epochTime)
         message = "Your request is now sent to the manager !"
         flash(message)
         return redirect(url_for('home_page'))
+
+@app.route('/returnPost', methods=['POST'])
+def return_post():
+    empID = request.form.get('empID')
+    equipID = request.form.get('equipID')
+    # Update the status of equipment in DB
+    equipments = Equipment()
+    equipments.returnEquipment(empID, equipID)
+
+    return redirect(url_for('home_page'))
 
 # Manager Home page
 @app.route('/manager')
@@ -62,7 +75,6 @@ def approve_equipment():
     equipID = request.form.get('equipID')
     empName = request.form.get('empName')
     reqTime = request.form.get('issueTime')
-    print(empID, equipID)
 
     # 1. change in equipments table
     equipment = Equipment()

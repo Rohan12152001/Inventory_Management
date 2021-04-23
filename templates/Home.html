@@ -49,7 +49,7 @@
                 <td>{{record['equipName']}}</td>
                 {% if record['issued']!=1 %}
                     <td>Yes</td>
-                    <td>{{record['holderID']}}</td>
+                    <td>None</td>
                     <!-- Only issue -->
                     <td>
                         <form action="/issue">
@@ -59,10 +59,17 @@
                     </td>
                     <td>--</td>
                 {% else %}
+                    <!-- Only return -->
                     <td>No</td>
-                    <td>None</td>
+                    <td>{{record['holderID']}}</td>
                     <td>--</td>
-                    <td><input type="submit" value="Return"></td>   <!-- Only return -->
+                    <td>
+                        <form action="/returnPost" method="post">
+                        <input type="hidden" name="empID" id="empID" value={{record['holderID']}}>
+                        <input type="hidden" name="equipID" id="equipID" value={{record['equipID']}}>
+                        <input type="submit" name="return-form" id="return-form" value="Return">
+                        </form>
+                    </td>
                 {% endif %}
             </tr>
         {% endfor %}

@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Issue</title>
+    <style>
+        a {
+            color: blue;
+        }
+    </style>
 </head>
 <body>
 
@@ -10,11 +15,20 @@
     <h1><i><u>Issue Equipment</u></i></h1>
 
     <form action="/issuePost" method="post">
-        <input type="text" name="empID" id="empID" placeholder="EmployeeID" required><br><br>
+        <select name="empID" id="empID" required>
+                {% for record in records %}
+                    <option value={{ record['empID'] }}>{{ record['empID'] }}</option>
+                {% endfor %}
+        </select><br><br>
         <input type="text" name="equipID" id="equipID" readonly><br><br>
         <input type="submit" name="Submit-form" id="Submit-form" value="Submit">
     </form>
 
+    </div>
+
+    <div>
+        <br>
+        <h2><i>Go to: <a href="{{ url_for('home_page') }}">Home Page</a></i></h2>
     </div>
 
     <script>
