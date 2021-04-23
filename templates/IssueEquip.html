@@ -15,12 +15,12 @@
     <h1><i><u>Issue Equipment</u></i></h1>
 
     <form action="/issuePost" method="post">
-        <select name="empID" id="empID" required>
+        Select User ID: <select name="empID" id="empID" required>
                 {% for record in records %}
                     <option value={{ record['empID'] }}>{{ record['empID'] }}</option>
                 {% endfor %}
         </select><br><br>
-        <input type="text" name="equipID" id="equipID" readonly><br><br>
+        Equipment ID: <input type="text" name="equipID" id="equipID" readonly><br><br>
         <input type="submit" name="Submit-form" id="Submit-form" value="Submit">
     </form>
 
