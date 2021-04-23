@@ -4,7 +4,7 @@ from configuration import DB
 
 """
 
-Please create a MySQL database first 
+Create a MySQL database first 
 And configure the variables 
 (host,database,user, password) in configurations.py accordingly
 And then run this script...
