@@ -12,7 +12,6 @@ def formatDateTime(givenTime):
     ).strftime('%d-%m-%Y || %H:%M:%S')
 
 # For equipments
-
 class Equipment:
     def getAll(self):
         try:
@@ -108,7 +107,7 @@ class Equipment:
                 connection.close()
                 print("MySQL connection is closed")
 
-
+# For Employee
 class Employee:
     def getAll(self):
         try:
@@ -156,6 +155,7 @@ class Employee:
 
         return records
 
+# For Buffer
 class BufferedRequests:
     def checkBuffer(self, empID, equipID):
         try:

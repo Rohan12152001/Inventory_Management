@@ -1,4 +1,4 @@
-import requests, os, sys
+import os, sys
 import time
 from flask import Flask, request, \
     render_template, redirect, \
@@ -47,6 +47,7 @@ def issue_post():
 def return_post():
     empID = request.form.get('empID')
     equipID = request.form.get('equipID')
+
     # Update the status of equipment in DB
     equipments = Equipment()
     equipments.returnEquipment(empID, equipID)
@@ -61,7 +62,6 @@ def manager_home():
 
     buffer = BufferedRequests()
     bufferRecords = buffer.getAllwithNames()
-    # print(bufferRecords)
 
     return render_template('managerHome.html',
                            records=equipmentRecords,
